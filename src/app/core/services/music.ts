@@ -139,4 +139,11 @@ export class MusicService {
   getAllArtists() {
     return this.http.get<any[]>(`${this.baseUrl}/artist/get-all`);
   }
+
+  getUserStatistics() {
+    return this.http.get<{
+      totalPlaylists: number;
+      totalFavorites: number;
+    }>(`${this.baseUrl}/user/statistics`);
+  }
 }

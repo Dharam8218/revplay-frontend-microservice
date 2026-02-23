@@ -111,6 +111,13 @@ export const routes: Routes = [
         path: 'browse-album',
         component: BrowseByAlbumComponent,
       },
+      {
+        path: 'my-stats',
+        loadComponent: () =>
+          import('./features/user/user-stats/user-stats').then(
+            (m) => m.UserStatsComponent,
+          ),
+      },
     ],
   },
 
