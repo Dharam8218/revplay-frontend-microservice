@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { PlayerService } from '../../../../core/services/player';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './history-list.html',
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class HistoryListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -25,6 +26,7 @@ export class HistoryListComponent implements OnInit, OnDestroy {
   constructor(
     private musicService: MusicService,
     private playerService: PlayerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -33,13 +35,14 @@ export class HistoryListComponent implements OnInit, OnDestroy {
 
   loadData() {
     this.loading = true;
-
+    this.cdr.markForCheck();
     // Recently Played (simple list)
     this.musicService
       .getRecentlyPlayed()
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.recentlyPlayed = res || [];
+        this.cdr.detectChanges(); // Force view update immediately
       });
 
     // Full History (Page object)
@@ -50,6 +53,8 @@ export class HistoryListComponent implements OnInit, OnDestroy {
         this.history = res.content || [];
         this.totalPages = res.totalPages;
         this.loading = false;
+        this.cdr.detectChanges(); // Force view update immediately
+
       });
   }
   play(song: any) {

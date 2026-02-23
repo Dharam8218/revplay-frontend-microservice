@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -6,12 +6,14 @@ import { takeUntil } from 'rxjs/operators';
 import { MusicService } from '../../../../core/services/music';
 import { FormsModule } from '@angular/forms';
 
+
 @Component({
   selector: 'app-playlist-list',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './playlist-list.html',
   styleUrls: ['./playlist-list.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class PlaylistListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -26,6 +28,7 @@ export class PlaylistListComponent implements OnInit, OnDestroy {
   constructor(
     private musicService: MusicService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -34,7 +37,7 @@ export class PlaylistListComponent implements OnInit, OnDestroy {
 
   loadPlaylists() {
     this.loading = true;
-
+    this.cdr.markForCheck();
     this.musicService
       .getPlaylists(this.page, this.size)
       .pipe(takeUntil(this.destroy$))
@@ -43,10 +46,12 @@ export class PlaylistListComponent implements OnInit, OnDestroy {
           this.playlists = res.content;
           this.totalPages = res.totalPages;
           this.loading = false;
+          this.cdr.detectChanges(); // Force view update immediately
           console.log('Playlist loaded', res);
         },
         error: () => {
           this.loading = false;
+          this.cdr.detectChanges();
         },
       });
   }

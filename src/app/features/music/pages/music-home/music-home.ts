@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MusicService } from '../../../../core/services/music';
 import { PlayerService } from '../../../../core/services/player';
@@ -11,6 +11,8 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './music-home.html',
+  styleUrls: ['./music-home.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class MusicHomeComponent implements OnInit {
   private destroy$ = new Subject<void>();
@@ -42,6 +44,7 @@ export class MusicHomeComponent implements OnInit {
   constructor(
     private musicService: MusicService,
     private playerService: PlayerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -60,12 +63,16 @@ export class MusicHomeComponent implements OnInit {
   }
 
   loadFavorites() {
+    this.loading = true;
+    this.cdr.markForCheck();
     this.musicService
       .getFavorites()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res: any[]) => {
           this.favoriteIds = new Set(res.map((song) => song.id));
+          this.loading = false;
+          this.cdr.detectChanges(); // Force view update immediately  
         },
         error: (err) => {
           console.error('Favorites failed', err);
@@ -75,7 +82,7 @@ export class MusicHomeComponent implements OnInit {
 
   loadSongs() {
     this.loading = true;
-
+    this.cdr.markForCheck();
     this.musicService
       .getSongs(this.page, this.size, 'id', 'asc')
       .pipe(takeUntil(this.destroy$))
@@ -88,10 +95,12 @@ export class MusicHomeComponent implements OnInit {
           //this.playerService.setPlaylist(this.songs);
 
           this.loading = false;
+          this.cdr.detectChanges(); // Force view update immediately
         },
         error: (err) => {
           console.error('Error loading songs:', err);
           this.loading = false; // 🔥 IMPORTANT
+          this.cdr.detectChanges(); // Force view update immediately
         },
       });
   }
@@ -119,30 +128,43 @@ export class MusicHomeComponent implements OnInit {
   }
 
   toggleFavorite(song: any) {
+
+    this.cdr.markForCheck();
     const isFav = this.favoriteIds.has(song.id);
 
     if (!isFav) {
       this.favoriteIds.add(song.id);
-
       this.musicService
         .markFavorite(song.id)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
-          error: () => this.favoriteIds.delete(song.id),
+          next: () => {
+            this.cdr.detectChanges(); // Force view update immediately
+          },
+          error: () => {
+            this.favoriteIds.delete(song.id);
+            this.cdr.detectChanges(); // Force view update immediately
+          },
         });
     } else {
       this.favoriteIds.delete(song.id);
-
       this.musicService
         .removeFavorite(song.id)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
-          error: () => this.favoriteIds.add(song.id),
+          next: () => {       
+            this.cdr.detectChanges(); // Force view update immediately  
+          },
+          error: () => {
+            this.favoriteIds.add(song.id);
+            this.cdr.detectChanges(); // Force view update immediately
+          },
         });
     }
   }
 
   openAddToPlaylist(song: any) {
+    this.cdr.markForCheck();
     this.selectedSongForPlaylist = song;
     this.showPlaylistPopup = true;
 
@@ -151,6 +173,7 @@ export class MusicHomeComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.userPlaylists = res.content;
+        this.cdr.detectChanges(); // Force view update immediately
       });
   }
 
@@ -160,8 +183,9 @@ export class MusicHomeComponent implements OnInit {
   }
 
   addSongToPlaylist(playlistId: number) {
-    this.addingPlaylistId = playlistId;
 
+    this.cdr.markForCheck();
+    this.addingPlaylistId = playlistId;
     this.musicService
       .addSongToPlaylist(playlistId, this.selectedSongForPlaylist.id)
       .pipe(takeUntil(this.destroy$))
@@ -176,10 +200,12 @@ export class MusicHomeComponent implements OnInit {
           this.addingPlaylistId = null;
           this.closePlaylistPopup();
           this.showToast('Song added to playlist 🎵');
+          this.cdr.detectChanges(); // Force view update immediately
         },
         error: () => {
           this.addingPlaylistId = null;
           this.showToast('Song already exists ⚠');
+          this.cdr.detectChanges(); // Force view update immediately
         },
       });
   }

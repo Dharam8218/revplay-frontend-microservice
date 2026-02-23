@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MusicService } from '../../../../core/services/music';
 import { SongResponse, PagedResult } from '../../../../core/models/serach';
@@ -6,6 +6,8 @@ import { PlayerService } from '../../../../core/services/player';
 @Component({
   selector: 'app-genre-page',
   templateUrl: './genre-page.html',
+  styleUrls: ['./genre-page.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class GenrePageComponent implements OnInit {
   genre = '';
@@ -18,6 +20,7 @@ export class GenrePageComponent implements OnInit {
     private route: ActivatedRoute,
     private musicService: MusicService,
     private playerService: PlayerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   play(song: any) {
@@ -44,14 +47,17 @@ export class GenrePageComponent implements OnInit {
 
   loadSongs() {
     this.loading = true;
+    this
     this.musicService.getSongsByGenre(this.genre).subscribe({
       next: (res) => {
         this.songs = res.content;
         this.loading = false;
+        this.cdr.detectChanges(); // Force view update immediately
       },
       error: (err) => {
         console.error(err);
         this.loading = false;
+        this.cdr.detectChanges(); // Force view update immediately
       },
     });
   }

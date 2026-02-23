@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy,ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -10,6 +10,8 @@ import { MusicService } from '../../../../core/services/music';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './public-playlists.html',
+  changeDetection: ChangeDetectionStrategy.Default,
+
 })
 export class PublicPlaylistsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -24,6 +26,7 @@ export class PublicPlaylistsComponent implements OnInit, OnDestroy {
   constructor(
     private musicService: MusicService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -32,7 +35,7 @@ export class PublicPlaylistsComponent implements OnInit, OnDestroy {
 
   loadPublicPlaylists() {
     this.loading = true;
-
+    this.cdr.markForCheck();
     this.musicService
       .getPublicPlaylists(this.page)
       .pipe(takeUntil(this.destroy$))
@@ -41,8 +44,10 @@ export class PublicPlaylistsComponent implements OnInit, OnDestroy {
           this.playlists = res.content;
           this.totalPages = res.totalPages;
           this.loading = false;
+          this.cdr.detectChanges(); // Force view update immediately
+          console.log('Public playlists loaded', res);
         },
-        error: () => (this.loading = false),
+        error: () => (this.loading = false, this.cdr.detectChanges()), // Ensure loading state is updated on error
       });
   }
 
@@ -71,13 +76,14 @@ export class PublicPlaylistsComponent implements OnInit, OnDestroy {
 
   toggleFollow(playlist: any, event: Event) {
     event.stopPropagation();
-
+    this
     const isFollowed = this.followedIds.has(playlist.id);
 
     if (!isFollowed) {
       this.musicService.followPlaylist(playlist.id).subscribe({
         next: () => {
           this.followedIds.add(playlist.id);
+          this.cdr.detectChanges(); // Force view update immediately
         },
         error: (err) => console.error('Follow failed', err),
       });
@@ -85,6 +91,7 @@ export class PublicPlaylistsComponent implements OnInit, OnDestroy {
       this.musicService.unfollowPlaylist(playlist.id).subscribe({
         next: () => {
           this.followedIds.delete(playlist.id);
+          this.cdr.detectChanges(); // Force view update immediately
         },
         error: (err) => console.error('Unfollow failed', err),
       });

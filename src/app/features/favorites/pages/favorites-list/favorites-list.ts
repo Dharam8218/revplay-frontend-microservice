@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MusicService } from '../../../../core/services/music';
 import { PlayerService } from '../../../../core/services/player';
@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './favorites-list.html',
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class FavoritesListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -23,6 +24,7 @@ export class FavoritesListComponent implements OnInit, OnDestroy {
   constructor(
     private musicService: MusicService,
     private playerService: PlayerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +41,7 @@ export class FavoritesListComponent implements OnInit, OnDestroy {
 
   loadFavorites() {
     this.loading = true;
-
+    this.cdr.markForCheck();
     this.musicService
       .getFavorites()
       .pipe(takeUntil(this.destroy$))
@@ -47,6 +49,7 @@ export class FavoritesListComponent implements OnInit, OnDestroy {
         next: (res: any[]) => {
           this.songs = [...res]; // ✅ force new array reference
           this.loading = false;
+          this.cdr.detectChanges(); // Force view update immediately
         },
         // next: (res: any[]) => {
         //   this.songs = res;
@@ -55,6 +58,7 @@ export class FavoritesListComponent implements OnInit, OnDestroy {
         error: (err) => {
           console.error('Favorites failed:', err);
           this.loading = false;
+          this.cdr.detectChanges(); // Force view update immediately
         },
       });
   }
