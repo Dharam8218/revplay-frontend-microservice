@@ -41,4 +41,18 @@ export class NavbarComponent {
       this.router.navigateByUrl(`/genres/${genre}`);
     }
   }
+
+  navigateToBrowse(event: any) {
+    const value = event.target.value;
+
+    if (value === 'artist') {
+      this.router.navigate(['/browse-artist']);
+    }
+
+    if (value === 'album') {
+      this.router.navigate(['/browse-album']);
+    }
+
+    event.target.value = ''; // reset dropdown
+  }
 }

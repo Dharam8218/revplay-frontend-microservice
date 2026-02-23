@@ -1,0 +1,74 @@
+<div class="p-8 text-white">
+
+    <!-- TITLE -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold">Browse by Album</h1>
+        <p class="text-gray-400">Select an album to view tracks</p>
+    </div>
+
+    <!-- DROPDOWN -->
+    <div class="flex gap-4 mb-10">
+
+        <select [(ngModel)]="selectedAlbumId" class="input-style bg-surfaceDark w-64">
+
+            <option [ngValue]="null">Select Album</option>
+
+            @for (album of albums; track album.id) {
+            <option [ngValue]="album.id">
+                {{ album.name }}
+            </option>
+            }
+
+        </select>
+
+        <button (click)="loadAlbum()" class="px-6 py-2 bg-green-600 hover:bg-green-700 rounded-md">
+            Browse
+        </button>
+
+    </div>
+
+    <!-- ALBUM TRACKS -->
+    @if (selectedAlbum) {
+
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold">
+            {{ selectedAlbum.name }}
+        </h2>
+        <p class="text-gray-400 text-sm">
+            {{ selectedAlbum.releaseDate }}
+        </p>
+    </div>
+
+    <div class="space-y-4">
+
+      @for (track of selectedAlbum.songs; track track.id){
+
+        <div class="bg-surfaceDark p-5 rounded-lg flex justify-between items-center">
+
+            <div>
+                <h4 class="font-semibold text-lg">
+                    {{ track.title }}
+                </h4>
+                <p class="text-gray-400 text-sm">
+                    {{ track.genre }}
+                </p>
+            </div>
+
+            <button (click)="play(track)" class="bg-green-500 p-2 rounded-full text-black hover:bg-green-600 transition">
+
+            @if (currentSong?.id === track.id && isPlaying) {
+            ❚❚
+            } @else {
+            ▶
+            }
+            </button>
+
+        </div>
+
+        }
+
+    </div>
+
+    }
+
+</div>

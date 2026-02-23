@@ -2,6 +2,9 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout';
 import { artistGuard } from './core/guards/artist-guard';
+import { BrowseComponent } from './features/browse/pages/browse-component/browse-component';
+import { BrowseByAlbumComponent } from './features/browse/pages/album-page/album-page';
+import { BrowseByArtistComponent } from './features/browse/pages/artist-page/artist-page';
 
 export const routes: Routes = [
   // 🔓 PUBLIC ROUTES (NO LAYOUT)
@@ -95,6 +98,18 @@ export const routes: Routes = [
         path: 'genres/:genre',
         loadComponent: () =>
           import('./features/browse/pages/genre-page/genre-page').then((m) => m.GenrePageComponent),
+      },
+      {
+        path: 'browse',
+        component: BrowseComponent,
+      },
+      {
+        path: 'browse-artist',
+        component: BrowseByArtistComponent,
+      },
+      {
+        path: 'browse-album',
+        component: BrowseByAlbumComponent,
       },
     ],
   },

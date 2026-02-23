@@ -135,4 +135,8 @@ export class MusicService {
       params: { page, size },
     });
   }
+
+  getAllArtists() {
+    return this.http.get<any[]>(`${this.baseUrl}/artist/get-all`);
+  }
 }

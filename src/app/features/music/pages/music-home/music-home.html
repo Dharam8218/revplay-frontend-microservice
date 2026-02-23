@@ -1,3 +1,35 @@
+<!-- FILTER BAR -->
+<div class="mb-8 flex flex-wrap items-center gap-4">
+
+    <!-- Genre Filter -->
+    <select [(ngModel)]="selectedGenre" (change)="applyFilters()"
+        class="bg-surfaceDark text-white px-4 py-2 rounded-md">
+
+        <option [ngValue]="null">All Genres</option>
+
+        @for (g of genres; track g) {
+        <option [ngValue]="g">
+            {{ g.replace('_', ' ') }}
+        </option>
+        }
+
+    </select>
+
+    <!-- Sort -->
+    <select [(ngModel)]="sortDirection" (change)="applyFilters()"
+        class="bg-surfaceDark text-white px-4 py-2 rounded-md">
+
+        <option value="asc">Oldest</option>
+        <option value="desc">Newest</option>
+
+    </select>
+
+    <!-- Clear -->
+    <button (click)="clearFilters()" class="px-4 py-2 bg-gray-700 rounded-md hover:bg-gray-600">
+        Clear
+    </button>
+
+</div>
 <div class="grid grid-cols-5 gap-6">
 
     @for (song of songs; track song.id) {

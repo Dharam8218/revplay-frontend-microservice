@@ -1,0 +1,85 @@
+<div class="p-8 text-white space-y-8">
+
+    <h1 class="text-3xl font-bold">Browse Music</h1>
+
+    <!-- FILTER PANEL -->
+    <div class="bg-surfaceDark p-6 rounded-lg space-y-4">
+
+        <div class="flex gap-4">
+
+            <select [(ngModel)]="selectedGenre" class="input-style bg-surfaceDark">
+                <option [ngValue]="null">Select Genre</option>
+                @for (g of genres; track g) {
+                <option [ngValue]="g">{{ g }}</option>
+                }
+            </select>
+
+            <input type="number" [(ngModel)]="selectedArtistId" placeholder="Artist ID" class="input-style" />
+
+            <input type="number" [(ngModel)]="selectedYear" placeholder="Year" class="input-style" />
+
+            <button (click)="applyFilters()" class="px-6 py-2 bg-green-600 rounded">
+                Apply Filters
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- SONG RESULTS -->
+    @if (songs.length > 0) {
+
+    <div class="space-y-4">
+
+        @for (song of songs; track song.id) {
+
+        <div class="bg-surfaceDark p-4 rounded flex justify-between items-center">
+
+            <div>
+                <h3 class="font-bold">{{ song.title }}</h3>
+                <p class="text-gray-400 text-sm">
+                    {{ song.genre }} • {{ song.releaseDate }}
+                </p>
+            </div>
+
+            <audio controls [src]="song.audioUrl"></audio>
+
+        </div>
+
+        }
+
+    </div>
+
+    }
+
+    <!-- ALBUM VIEW -->
+    @if (selectedAlbum) {
+
+    <div class="space-y-4">
+
+        <h2 class="text-2xl font-bold">
+            {{ selectedAlbum.albumName }}
+        </h2>
+
+        @for (track of selectedAlbum.tracks; track track.id) {
+
+        <div class="bg-surfaceDark p-4 rounded flex justify-between">
+
+            <div>
+                <h4 class="font-semibold">{{ track.title }}</h4>
+                <p class="text-gray-400 text-sm">
+                    {{ track.genre }}
+                </p>
+            </div>
+
+            <audio controls [src]="track.audioUrl"></audio>
+
+        </div>
+
+        }
+
+    </div>
+
+    }
+
+</div>

@@ -17,6 +17,15 @@
 
   </select>
 
+  <!-- New Browse Dropdown -->
+  <select (change)="navigateToBrowse($event)" class="bg-surfaceDark text-white px-3 py-2 rounded-md">
+
+    <option value="">Browse More</option>
+    <option value="artist">By Artist</option>
+    <option value="album">By Album</option>
+
+  </select>
+
   <!-- Profile Button -->
   <button class="bg-spotify px-4 py-2 rounded-full text-black font-semibold hover:opacity-80">
     @if (!authService.isLoggedIn()) {

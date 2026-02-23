@@ -5,11 +5,12 @@ import { PlayerService } from '../../../../core/services/player';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-music-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './music-home.html',
   styleUrls: ['./music-home.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
@@ -40,6 +41,9 @@ export class MusicHomeComponent implements OnInit {
   favoriteIds = new Set<number>();
   addingPlaylistId: number | null = null;
   toastMessage: string | null = null;
+
+  selectedGenre: string | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
     private musicService: MusicService,
@@ -72,7 +76,7 @@ export class MusicHomeComponent implements OnInit {
         next: (res: any[]) => {
           this.favoriteIds = new Set(res.map((song) => song.id));
           this.loading = false;
-          this.cdr.detectChanges(); // Force view update immediately  
+          this.cdr.detectChanges(); // Force view update immediately
         },
         error: (err) => {
           console.error('Favorites failed', err);
@@ -83,26 +87,55 @@ export class MusicHomeComponent implements OnInit {
   loadSongs() {
     this.loading = true;
     this.cdr.markForCheck();
-    this.musicService
-      .getSongs(this.page, this.size, 'id', 'asc')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.songs = res.content;
-          this.totalPages = res.totalPages;
-          this.totalElements = res.totalElements;
 
-          //this.playerService.setPlaylist(this.songs);
+    if (this.selectedGenre) {
+      this.musicService
+        .getSongsByGenre(this.selectedGenre, this.page, this.size)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            this.songs = res.content;
+            this.totalPages = res.totalPages;
+            this.totalElements = res.totalElements;
+            this.loading = false;
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error(err);
+            this.loading = false;
+            this.cdr.detectChanges();
+          },
+        });
+    } else {
+      this.musicService
+        .getSongs(this.page, this.size, 'id', this.sortDirection)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            this.songs = res.content;
+            this.totalPages = res.totalPages;
+            this.totalElements = res.totalElements;
+            this.loading = false;
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error(err);
+            this.loading = false;
+            this.cdr.detectChanges();
+          },
+        });
+    }
+  }
+  applyFilters() {
+    this.page = 0;
+    this.loadSongs();
+  }
 
-          this.loading = false;
-          this.cdr.detectChanges(); // Force view update immediately
-        },
-        error: (err) => {
-          console.error('Error loading songs:', err);
-          this.loading = false; // 🔥 IMPORTANT
-          this.cdr.detectChanges(); // Force view update immediately
-        },
-      });
+  clearFilters() {
+    this.selectedGenre = null;
+    this.sortDirection = 'asc';
+    this.page = 0;
+    this.loadSongs();
   }
 
   nextPage() {
@@ -128,7 +161,6 @@ export class MusicHomeComponent implements OnInit {
   }
 
   toggleFavorite(song: any) {
-
     this.cdr.markForCheck();
     const isFav = this.favoriteIds.has(song.id);
 
@@ -152,8 +184,8 @@ export class MusicHomeComponent implements OnInit {
         .removeFavorite(song.id)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
-          next: () => {       
-            this.cdr.detectChanges(); // Force view update immediately  
+          next: () => {
+            this.cdr.detectChanges(); // Force view update immediately
           },
           error: () => {
             this.favoriteIds.add(song.id);
@@ -183,7 +215,6 @@ export class MusicHomeComponent implements OnInit {
   }
 
   addSongToPlaylist(playlistId: number) {
-
     this.cdr.markForCheck();
     this.addingPlaylistId = playlistId;
     this.musicService
