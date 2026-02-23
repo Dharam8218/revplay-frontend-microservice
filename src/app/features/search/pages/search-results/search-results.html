@@ -1,0 +1,53 @@
+<div class="p-8 text-white">
+
+    <h1 class="text-3xl font-bold mb-6">Results for "{{ query }}"</h1>
+
+    <!-- @if (loading) {
+    <p>Loading...</p>
+    } -->
+
+    <!-- @if (!loading) { -->
+
+    <!-- SONGS -->
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-3">Songs</h2>
+        @for (song of results?.songs?.content; track song.id) {
+        <div class="bg-surfaceDark p-3 rounded mb-2 flex justify-between">
+            <div>
+                <p class="font-bold">{{ song.title }}</p>
+                <p class="text-sm text-gray-400">{{ song.artistName }}</p>
+            </div>
+            <button (click)="play(song)" class="text-green-400">▶</button>
+        </div>
+        }
+    </section>
+
+    <!-- ARTISTS -->
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-3">Artists</h2>
+        @for (artist of results?.artists?.content; track artist.id) {
+        <p class="p-2 bg-surfaceDark mb-2 rounded">{{ artist.name }}</p>
+        }
+    </section>
+
+    <!-- ALBUMS -->
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-3">Albums</h2>
+        @for (album of results?.albums?.content; track album.id) {
+        <p class="p-2 bg-surfaceDark mb-2 rounded">{{ album.name }}</p>
+        }
+    </section>
+
+    <!-- PLAYLISTS -->
+    <section>
+        <h2 class="text-xl font-semibold mb-3">Playlists</h2>
+        @for (pl of results?.playlists?.content; track pl.id) {
+        <div class="p-3 bg-surfaceDark rounded mb-2">
+            <p class="font-bold">{{ pl.name }}</p>
+            <p class="text-sm text-gray-400">{{ pl.isPublic ? 'Public' : 'Private' }}</p>
+        </div>
+        }
+    </section>
+
+    <!-- } -->
+</div>

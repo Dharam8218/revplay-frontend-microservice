@@ -1,0 +1,57 @@
+<div class="p-8 text-white">
+
+    <h1 class="text-3xl font-bold mb-6">🎧 Listening History</h1>
+
+    <!-- @if (loading) {
+    <div class="flex justify-center mt-20">
+        <div class="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+    } -->
+
+    <!-- @if (!loading) { -->
+
+    <!-- Recently Played -->
+    <h2 class="text-xl font-semibold mb-4">Recently Played</h2>
+
+    <div class="grid grid-cols-5 gap-4 mb-10">
+        @for (song of recentlyPlayed; track song.id) {
+        <div class="bg-surfaceDark p-4 rounded-lg hover:bg-surfaceLight transition cursor-pointer" (click)="play(song)">
+
+            <p class="font-semibold truncate">{{ song.title }}</p>
+            <p class="text-gray-400 text-sm truncate">{{ song.artistName }}</p>
+
+        </div>
+        }
+    </div>
+
+    <!-- Full History -->
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">All History</h2>
+
+        <button (click)="clearHistory()" class="bg-red-600 px-4 py-2 rounded-full hover:bg-red-700 transition">
+            Clear History
+        </button>
+    </div>
+
+    <div class="space-y-3">
+        @for (song of history; track song.id) {
+
+        <div class="flex items-center justify-between bg-surfaceDark p-4 rounded-lg hover:bg-surfaceLight transition">
+
+            <div>
+                <p class="font-semibold">{{ song.title }}</p>
+                <p class="text-gray-400 text-sm">{{ song.artistName }}</p>
+            </div>
+
+            <button (click)="play(song)" class="bg-green-500 px-3 py-1 rounded-full text-black">
+                ▶
+            </button>
+
+        </div>
+
+        }
+    </div>
+
+    <!-- } -->
+
+</div>

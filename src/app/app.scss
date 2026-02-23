@@ -1,0 +1,26 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  background-color: #0f0f0f;
+}
+
+.app-container {
+  display: flex;
+  height: calc(100vh - 80px);
+}
+
+app-sidebar {
+  width: 240px;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}

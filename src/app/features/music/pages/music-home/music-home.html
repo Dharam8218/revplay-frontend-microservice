@@ -1,0 +1,139 @@
+<div class="grid grid-cols-5 gap-6">
+
+    @for (song of songs; track song.id) {
+
+    <div class="relative bg-surfaceDark p-4 rounded-lg hover:bg-surfaceLight transition cursor-pointer">
+
+        <!-- Favorite Button -->
+        <button (click)="toggleFavorite(song); $event.stopPropagation()"
+            class="absolute top-4 right-4 text-xl transition">
+
+            @if (favoriteIds.has(song.id)) {
+            <span class="text-red-500">❤️</span>
+            } @else {
+            <span class="text-gray-400 hover:text-red-500">🤍</span>
+            }
+
+        </button>
+
+        <button (click)="openAddToPlaylist(song); $event.stopPropagation()"
+            class="absolute top-4 left-4 text-white text-xl hover:text-green-400 transition">
+            ➕
+        </button>
+
+        <!-- Cover -->
+        <img [src]="song.coverArtUrl" class="w-full h-40 object-cover rounded-md mb-3" />
+
+        <!-- Title -->
+        <h3 class="text-white font-semibold truncate">
+            {{ song.title }}
+        </h3>
+
+        <!-- Artist -->
+        <p class="text-gray-400 text-sm truncate">
+            {{ song.artistName }}
+        </p>
+
+        <!-- Genre -->
+        <p class="text-xs text-gray-500">
+            {{ song.genre }}
+        </p>
+
+        <!-- Play Button -->
+        <button (click)="play(song); $event.stopPropagation()"
+            class="absolute bottom-4 right-4 bg-green-500 hover:scale-110 transition p-3 rounded-full shadow-lg text-black font-bold">
+
+            @if (currentSong?.id === song.id && isPlaying) {
+            ❚❚
+            } @else {
+            ▶
+            }
+
+        </button>
+
+
+    </div>
+
+    }
+</div>
+<!-- Pagination -->
+<div class="mt-12 w-full flex justify-center">
+
+    <div class="flex items-center gap-10 text-white">
+
+        <button (click)="prevPage()" [disabled]="page === 0"
+            class="px-6 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-40 transition">
+            Previous
+        </button>
+
+        <div class="text-center">
+            <p class="text-sm text-gray-400">Page</p>
+            <p class="text-lg font-semibold">
+                {{ page + 1 }} of {{ totalPages }}
+            </p>
+        </div>
+
+        <button (click)="nextPage()" [disabled]="page === totalPages - 1"
+            class="px-6 py-2 rounded-lg bg-green-600 hover:bg-green-700 disabled:opacity-40 transition">
+            Next
+        </button>
+
+    </div>
+
+</div>
+
+@if (showPlaylistPopup) {
+
+<div class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+
+    <div class="bg-surfaceDark p-6 rounded-xl w-96">
+
+        <h3 class="text-lg font-semibold mb-4 text-white">
+            Add to Playlist
+        </h3>
+
+        @if (userPlaylists.length === 0) {
+        <p class="text-gray-400">No playlists available</p>
+        }
+
+        <div class="space-y-2 max-h-60 overflow-y-auto">
+
+            @for (playlist of userPlaylists; track playlist.id) {
+
+            <div (click)="addSongToPlaylist(playlist.id)"
+                class="p-3 bg-surfaceLight rounded-lg hover:bg-green-600 hover:text-black cursor-pointer transition flex justify-between items-center"
+                [class.opacity-50]="addingPlaylistId === playlist.id">
+
+                <span>
+                    {{ playlist.name }}
+                </span>
+
+                @if (addingPlaylistId === playlist.id) {
+                <span class="text-sm text-gray-400 ml-2">
+                    Adding...
+                </span>
+                }
+
+            </div>
+
+            }
+
+        </div>
+
+        <button (click)="closePlaylistPopup()"
+            class="mt-4 w-full bg-gray-600 py-2 rounded hover:bg-gray-500 transition">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+}
+
+
+@if (toastMessage) {
+<div class="fixed bottom-28 right-6 bg-green-600 text-black px-4 py-2 rounded-lg shadow-lg">
+    {{ toastMessage }}
+</div>
+}

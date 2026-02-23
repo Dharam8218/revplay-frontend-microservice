@@ -1,0 +1,37 @@
+<div class="h-full p-6 flex flex-col">
+
+   <h1 class="text-2xl font-bold text-spotify mb-8">
+      RevPlay
+   </h1>
+
+   <nav class="space-y-4 text-gray-300">
+
+      <a routerLink="/library" class="block hover:text-white transition">
+         Library
+      </a>
+
+      <a routerLink="/favorites" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+         class="block hover:text-white transition">
+         Favorites
+      </a>
+
+      <a routerLink="/playlists" routerLinkActive="text-white" [routerLinkActiveOptions]="{ exact: true }"
+         class="block hover:text-white transition">
+         Playlists
+      </a>
+
+      <a routerLink="/history" class="block hover:text-white transition">
+         History
+      </a>
+
+      <a routerLink="/artist/dashboard" class="block hover:text-white transition">
+         Artist Dashboard
+      </a>
+
+      <a routerLink="/explore" routerLinkActive="text-white" class="block hover:text-white transition">
+         Explore
+      </a>
+
+   </nav>
+
+</div>

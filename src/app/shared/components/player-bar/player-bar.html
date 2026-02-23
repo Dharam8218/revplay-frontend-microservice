@@ -1,0 +1,57 @@
+<div class="h-full flex items-center justify-between px-8">
+
+  <!-- Song Info -->
+  <div>
+    @if (currentSong) {
+    <div>
+      <p class="font-semibold">{{ currentSong.title }}</p>
+      <p class="text-sm text-gray-400">{{ currentSong.artistName }}</p>
+    </div>
+    } @else {
+    <p class="font-semibold">No Song Playing</p>
+    <p class="text-sm text-gray-400">Select a song</p>
+    }
+  </div>
+
+  <!-- Controls -->
+  <div class="flex items-center space-x-4 text-xl">
+
+    <button (click)="previous()" class="text-white text-xl">
+      ⏮
+    </button>
+
+    <button (click)="toggle()" class="bg-white text-black rounded-full w-10 h-10 flex items-center justify-center">
+      @if (isPlaying) {
+      ❚❚
+      } @else {
+      ▶
+      }
+    </button>
+
+    <button (click)="next()" class="text-white text-xl">
+      ⏭
+    </button>
+
+  </div>
+
+  <!-- Volume -->
+  <div class="flex items-center gap-3">
+
+    <!-- Volume Icon -->
+    <button (click)="toggleMute()" class="text-white text-lg">
+
+      @if (volume === 0) {
+      🔇
+      } @else {
+      🔊
+      }
+
+    </button>
+
+    <!-- Volume Slider -->
+    <input type="range" min="0" max="1" step="0.01" [value]="volume" (input)="changeVolume($event)"
+      class="w-24 accent-green-500" />
+
+  </div>
+
+</div>

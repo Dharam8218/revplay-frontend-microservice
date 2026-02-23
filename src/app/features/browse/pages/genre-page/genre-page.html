@@ -1,0 +1,30 @@
+<div class="p-8 text-white">
+
+    <h1 class="text-3xl font-bold mb-6">{{ genre }} Songs</h1>
+
+    @if (loading) {
+    <p>Loading...</p>
+    }
+
+    @if (!loading) {
+    @for (song of songs; track song.id) {
+    <div class="bg-surfaceDark p-4 mb-3 rounded flex justify-between">
+        <div>
+            <p class="font-semibold">{{ song.title }}</p>
+            <p class="text-gray-400 text-sm">{{ song.artistName }}</p>
+        </div>
+
+        <button (click)="play(song)" class="bg-green-500 p-2 rounded-full text-black hover:bg-green-600 transition">
+
+            @if (currentSong?.id === song.id && isPlaying) {
+            ❚❚
+            } @else {
+            ▶
+            }
+
+        </button>
+    </div>
+    }
+    }
+
+</div>

@@ -1,0 +1,23 @@
+
+<div class="flex h-screen overflow-hidden bg-backgroundDark">
+
+  <!-- Sidebar -->
+  <app-sidebar class="w-64 bg-surfaceDark"></app-sidebar>
+
+  <!-- Main Section -->
+  <div class="flex-1 flex flex-col">
+
+    <!-- Navbar -->
+    <app-navbar class="h-16 bg-surfaceDark"></app-navbar>
+
+    <!-- Content -->
+    <div class="flex-1 overflow-y-auto p-6">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Player Bar -->
+<app-player-bar class="fixed bottom-0 left-0 right-0 h-20 bg-surfaceLight border-t border-gray-700"></app-player-bar>

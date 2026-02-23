@@ -1,0 +1,43 @@
+<div class="h-full flex items-center justify-between px-6">
+
+  <!-- Search -->
+  <input type="text" placeholder="Search songs, artists..." (keyup.enter)="goToSearch(searchInput.value)" #searchInput
+    class="bg-surfaceLight px-4 py-2 rounded-full focus:outline-none w-96 text-sm" />
+
+
+  <select (change)="navigateToGenre($event)" class="bg-surfaceDark text-white px-3 py-2 rounded-md">
+
+    <option value="">Browse by Genre</option>
+
+    @for (g of genres; track g) {
+    <option [value]="g">
+      {{ g.replace('_', ' ') }}
+    </option>
+    }
+
+  </select>
+
+  <!-- Profile Button -->
+  <button class="bg-spotify px-4 py-2 rounded-full text-black font-semibold hover:opacity-80">
+    @if (!authService.isLoggedIn()) {
+    <button routerLink="/login" class="btn btn-success">
+      Login
+    </button>
+    }
+
+    @if (authService.isLoggedIn()) {
+    <div class="d-flex align-items-center gap-2">
+
+      <span routerLink="/profile" class="text-white cursor-pointer text-green-500 hover:underline">
+        {{ username }}
+      </span>
+
+      <button class="btn btn-danger btn-sm" (click)="logout()">
+        Logout
+      </button>
+
+    </div>
+    }
+  </button>
+
+</div>
