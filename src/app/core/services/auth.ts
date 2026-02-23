@@ -53,9 +53,14 @@ export class AuthService {
     return this.http.get<any>(`${this.baseUrl}/get-profile`);
   }
   updateProfile(formData: FormData) {
-  return this.http.put(
-    `${this.baseUrl}/update-profile`,
-    formData
-  );
-}
+    return this.http.put(`${this.baseUrl}/update-profile`, formData);
+  }
+
+  getArtistProfile(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/artist/profile`);
+  }
+  
+  updateArtistProfile(formData: FormData): Observable<any> {
+    return this.http.put(`${this.baseUrl}/artist/profile`, formData);
+  }
 }
