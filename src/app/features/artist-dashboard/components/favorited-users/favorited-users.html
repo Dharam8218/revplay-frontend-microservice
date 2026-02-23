@@ -1,0 +1,47 @@
+<div class="mt-12">
+
+    <h3 class="text-xl font-bold mb-4">
+        Who Favorited Your Song
+    </h3>
+
+    <!-- Song Selector -->
+    <select [(ngModel)]="selectedSongId" class="input-style bg-surfaceDark mb-4">
+
+        <option [ngValue]="null">Select Song</option>
+
+        @for (song of songs ?? []; track song.id) {
+        <option [ngValue]="song.id">
+            {{ song.title }}
+        </option>
+        }
+
+    </select>
+
+    <button (click)="loadFavoritedUsers()" class="ml-2 px-4 py-2 bg-green-600 rounded">
+        Load
+    </button>
+
+    <div class="mt-6 space-y-3">
+
+        @for (user of favoritedUsers; track user.userId) {
+
+        <div class="bg-surfaceDark p-3 rounded flex items-center gap-4">
+
+            <img [src]="user.profilePicture" class="w-10 h-10 rounded-full object-cover" />
+
+            <div>
+                <div class="font-semibold">
+                    {{ user.displayName }}
+                </div>
+                <div class="text-gray-400 text-sm">
+                    {{ user.username }}
+                </div>
+            </div>
+
+        </div>
+
+        }
+
+    </div>
+
+</div>

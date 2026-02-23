@@ -1,0 +1,117 @@
+<div class="bg-surfaceDark p-6 rounded-lg text-white">
+
+    <h2 class="text-xl font-bold mb-6">Upload Song</h2>
+
+    <form [formGroup]="form" class="space-y-4">
+
+        <input type="text" formControlName="title" placeholder="Song Title" class="input-style" />
+
+        <select formControlName="genre" class="input-style bg-surfaceDark">
+
+            <option value="" disabled>Select Genre</option>
+
+            @for (g of genres; track g) {
+            <option [value]="g">{{ g }}</option>
+            }
+
+        </select>
+
+        <input type="number" formControlName="duration" placeholder="Duration (seconds)" class="input-style" />
+
+        <input type="number" formControlName="albumId" placeholder="Album ID (optional)" class="input-style" />
+
+        <input type="date" formControlName="releaseDate" class="input-style" />
+
+        <div>
+            <label class="text-sm text-gray-400">Audio File *</label>
+
+            @if (!uploading) {
+            <input type="file" accept="audio/*" (change)="onAudioSelected($event)" class="text-white" />
+            }
+        </div>
+
+        <div>
+            <label class="text-sm text-gray-400">Cover Image</label>
+
+            @if (!uploading) {
+            <input type="file" accept="image/*" (change)="onCoverSelected($event)" class="text-white" />
+            }
+        </div>
+
+        <button type="button" (click)="uploadSong()" [disabled]="uploading"
+            class="px-6 py-2 bg-green-600 hover:bg-green-700 rounded-md">
+
+            {{ uploading ? 'Uploading...' : 'Upload Song' }}
+
+        </button>
+
+    </form>
+
+</div>
+
+<!-- ============================= -->
+<!-- SONG LIST SECTION -->
+<!-- ============================= -->
+
+<div class="mt-10">
+
+    <h2 class="text-xl font-bold mb-4">Your Songs</h2>
+
+    <div *ngIf="songs.length === 0" class="text-gray-400">
+        No songs uploaded yet.
+    </div>
+
+    @for (song of songs; track song.id) {
+
+    <!-- Song Card -->
+    <div class="bg-surfaceDark p-5 rounded-lg flex items-center justify-between">
+
+        <!-- LEFT: Song Info -->
+        <div class="flex-1">
+            <h3 class="font-semibold text-lg">
+                {{ song.title }}
+            </h3>
+            <p class="text-gray-400 text-sm">
+                {{ song.genre }}
+            </p>
+        </div>
+
+        <!-- CENTER: Visibility -->
+        <div class="w-32 flex justify-center">
+            <!-- Toggle Here -->
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" [checked]="song.visibility === 'PUBLIC'"
+                    (change)="changeVisibility(song, $any($event.target).checked ? 'PUBLIC' : 'UNLISTED')"/>
+
+                <div class="w-11 h-6 bg-gray-600 rounded-full peer
+                  peer-checked:bg-green-600
+                  after:content-['']
+                  after:absolute
+                  after:top-[2px]
+                  after:left-[2px]
+                  after:bg-white
+                  after:rounded-full
+                  after:h-5 after:w-5
+                  after:transition-all
+                  peer-checked:after:translate-x-full">
+                </div>
+            </label>
+        </div>
+
+        <!-- RIGHT: Buttons (FIXED WIDTH) -->
+        <div class="w-40 flex justify-end gap-3">
+
+            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md">
+                Edit
+            </button>
+
+            <button class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md">
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+    }
+
+</div>

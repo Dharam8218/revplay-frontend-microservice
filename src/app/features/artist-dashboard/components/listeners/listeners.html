@@ -1,0 +1,39 @@
+<div class="mt-12">
+
+    <h3 class="text-xl font-bold mb-4">Top Listeners</h3>
+
+    @for (user of listeners; track user.userId) {
+
+    <div class="bg-surfaceDark p-4 rounded mb-3 flex justify-between">
+
+        <div>
+            <div class="font-semibold">{{ user.displayName }}</div>
+            <div class="text-gray-400 text-sm">
+                {{ user.username }}
+            </div>
+        </div>
+
+        <div class="text-green-400 font-bold">
+            {{ user.playCount }} plays
+        </div>
+
+    </div>
+
+    }
+
+    <!-- Pagination -->
+    <div class="flex gap-4 mt-4">
+
+        <button (click)="loadListeners(currentPage - 1)" [disabled]="currentPage === 0"
+            class="px-3 py-1 bg-gray-700 rounded">
+            Prev
+        </button>
+
+        <button (click)="loadListeners(currentPage + 1)" [disabled]="currentPage + 1 >= totalPages"
+            class="px-3 py-1 bg-gray-700 rounded">
+            Next
+        </button>
+
+    </div>
+
+</div>

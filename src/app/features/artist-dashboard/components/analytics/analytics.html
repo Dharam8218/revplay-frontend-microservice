@@ -1,0 +1,65 @@
+<div class="text-white">
+
+    <h2 class="text-2xl font-bold mb-6">Analytics</h2>
+
+    <!-- Trend Type Buttons -->
+    <div class="flex gap-4 mb-6">
+
+        <button (click)="changeType('DAILY')" [ngClass]="selectedType === 'DAILY'
+        ? 'bg-green-600'
+        : 'bg-gray-700'" class="px-4 py-2 rounded">
+            Daily
+        </button>
+
+        <button (click)="changeType('WEEKLY')" [ngClass]="selectedType === 'WEEKLY'
+        ? 'bg-green-600'
+        : 'bg-gray-700'" class="px-4 py-2 rounded">
+            Weekly
+        </button>
+
+        <button (click)="changeType('MONTHLY')" [ngClass]="selectedType === 'MONTHLY'
+        ? 'bg-green-600'
+        : 'bg-gray-700'" class="px-4 py-2 rounded">
+            Monthly
+        </button>
+
+    </div>
+
+    <!-- Loading -->
+    @if (loading) {
+    <div class="text-gray-400">Loading trends...</div>
+    }
+
+    <!-- Summary -->
+    @if (!loading) {
+
+    <div class="mb-6 bg-surfaceDark p-4 rounded-lg">
+        <h3 class="text-lg font-semibold">
+            Total Plays ({{ selectedType }})
+        </h3>
+        <p class="text-3xl text-green-500 font-bold">
+            {{ getTotalPlays() }}
+        </p>
+    </div>
+
+    <!-- Trend List -->
+    <div class="space-y-3">
+
+        @for (trend of trends; track trend.period) {
+
+        <div class="bg-surfaceDark p-3 rounded flex justify-between">
+
+            <span>{{ trend.period }}</span>
+            <span class="font-bold text-green-400">
+                {{ trend.playCount }} plays
+            </span>
+
+        </div>
+
+        }
+
+    </div>
+
+    }
+
+</div>

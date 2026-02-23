@@ -1,0 +1,69 @@
+<div class="text-white">
+
+    <h2 class="text-2xl font-bold mb-8">
+        Overview
+    </h2>
+
+    @if (loading) {
+    <div class="text-gray-400">Loading dashboard...</div>
+    }
+
+    @if (!loading) {
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Total Songs -->
+        <div class="bg-surfaceDark p-6 rounded-xl shadow-lg">
+
+            <p class="text-gray-400 mb-2">
+                Total Songs
+            </p>
+
+            <p class="text-4xl font-bold text-green-500">
+                {{ totalSongs }}
+            </p>
+
+        </div>
+
+        <!-- Total Plays -->
+        <div class="bg-surfaceDark p-6 rounded-xl shadow-lg">
+
+            <p class="text-gray-400 mb-2">
+                Total Plays
+            </p>
+
+            <p class="text-4xl font-bold text-green-500">
+                {{ totalPlays }}
+            </p>
+
+        </div>
+
+        <!-- Total Favorites -->
+        <div class="bg-surfaceDark p-6 rounded-xl shadow-lg">
+
+            <p class="text-gray-400 mb-2">
+                Total Favorites
+            </p>
+
+            <p class="text-4xl font-bold text-green-500">
+                {{ totalFavorites }}
+            </p>
+
+        </div>
+
+        <!-- Total Albums -->
+        <div class="bg-surfaceDark p-6 rounded-xl shadow-lg">
+            <p class="text-gray-400 mb-2">
+                Total Albums
+            </p>
+
+            <p class="text-4xl font-bold text-green-500">
+                {{ totalAlbums }}
+            </p>
+        </div>
+
+    </div>
+
+    }
+
+</div>

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout';
+import { artistGuard } from './core/guards/artist-guard';
 
 export const routes: Routes = [
   // 🔓 PUBLIC ROUTES (NO LAYOUT)
@@ -13,6 +14,12 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () =>
       import('./features/auth/pages/register/register').then((m) => m.RegisterComponent),
+  },
+
+  {
+    path: 'unauthorized',
+    loadComponent: () =>
+      import('./features/unauthorized/unauthorized').then((m) => m.UnauthorizedComponent),
   },
 
   // 🔐 APP ROUTES (WITH LAYOUT)
@@ -62,7 +69,7 @@ export const routes: Routes = [
           import('./features/artist/pages/artist-dashboard/artist-dashboard').then(
             (m) => m.ArtistDashboardComponent,
           ),
-        canActivate: [authGuard],
+        canActivate: [authGuard, artistGuard],
       },
       {
         path: 'profile',
