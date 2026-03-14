@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MusicService } from '../../../../core/services/music';
@@ -10,7 +16,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-playlist-details',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './playlist-details.html',
   changeDetection: ChangeDetectionStrategy.Default,
 })
@@ -52,20 +58,27 @@ export class PlaylistDetailsComponent implements OnInit, OnDestroy {
   loadPlaylist(id: number) {
     this.loading = true;
     this.cdr.markForCheck();
+
     this.musicService
       .getPlaylistById(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res: any) => {
-          this.playlist = res;
-          this.songs = res.songs || [];
           console.log('Playlist details loaded', res);
-          console.log('Before false:', this.loading);
+
+          // FIX
+          this.playlist = res.playlist;
+          this.songs = res.songs || [];
+
           this.loading = false;
-          console.log('After false:', this.loading);
-          this.cdr.detectChanges(); // Force view update immediately
+
+          this.cdr.detectChanges();
         },
-        error: () => (this.loading = false, this.cdr.detectChanges()), // Ensure loading state is updated on error
+
+        error: () => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
       });
   }
 
@@ -98,17 +111,24 @@ export class PlaylistDetailsComponent implements OnInit, OnDestroy {
   }
 
   togglePrivacy() {
-    if (!this.playlist) return;
-     this.cdr.markForCheck();
-    const newValue = !this.playlist.public;
+    if (!this.playlist || !this.playlist.id) {
+      console.error('Playlist ID missing');
+      return;
+    }
 
-    console.log('Calling PATCH with:', newValue); // DEBUG
+    this.cdr.markForCheck();
 
-    this.musicService.updatePlaylistPrivacy(this.playlist.id, newValue).subscribe({
+    const newVisibility = this.playlist.visibility === 'PUBLIC' ? 'PRIVATE' : 'PUBLIC';
+
+    console.log('Calling PATCH with:', newVisibility);
+    console.log('Playlist object:', this.playlist);
+    console.log('Playlist ID:', this.playlist?.id);
+
+    this.musicService.updatePlaylistPrivacy(this.playlist.id, newVisibility).subscribe({
       next: (updated) => {
         console.log('Updated response:', updated);
         this.playlist = updated;
-        this.cdr.detectChanges(); // Force view update immediately  
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Privacy update failed', err),
     });
@@ -137,18 +157,18 @@ export class PlaylistDetailsComponent implements OnInit, OnDestroy {
   editData = {
     name: '',
     description: '',
-    public: false,
+    visibility: 'PRIVATE',
   };
 
   enableEdit() {
     if (!this.playlist) return;
-      this.cdr.markForCheck();
+    this.cdr.markForCheck();
     this.editData = {
       name: this.playlist.name,
       description: this.playlist.description,
-      public: this.playlist.public,
+      visibility: this.playlist.visibility,
     };
-    this.cdr.detectChanges(); // Force view update immediately  
+    this.cdr.detectChanges(); // Force view update immediately
     this.editMode = true;
   }
 
@@ -158,11 +178,15 @@ export class PlaylistDetailsComponent implements OnInit, OnDestroy {
 
   saveUpdate() {
     if (!this.playlist) return;
-      this.cdr.markForCheck();
+    this.cdr.markForCheck();
     this.musicService.updatePlaylist(this.playlist.id, this.editData).subscribe({
       next: (updated) => {
         this.playlist = updated;
         this.editMode = false;
+
+        this.playlist.totalSongs = this.songs.length;
+
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('PUT failed:', err),
     });

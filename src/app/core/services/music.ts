@@ -81,8 +81,10 @@ export class MusicService {
     return this.http.get<any>(`${this.baseUrl}/playlists/${id}/songs`);
   }
 
-  updatePlaylistPrivacy(id: number, isPublic: boolean) {
-    return this.http.patch(`${this.baseUrl}/playlists/${id}/privacy`, { isPublic: isPublic });
+  updatePlaylistPrivacy(id: number, visibility: string) {
+    return this.http.patch(`${this.baseUrl}/playlists/${id}/visibility`, {
+      visibility: visibility,
+    });
   }
 
   updatePlaylist(id: number, data: any) {

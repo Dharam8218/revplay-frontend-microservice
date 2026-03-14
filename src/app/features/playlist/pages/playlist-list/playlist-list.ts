@@ -1,11 +1,16 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MusicService } from '../../../../core/services/music';
 import { FormsModule } from '@angular/forms';
-
 
 @Component({
   selector: 'app-playlist-list',
@@ -105,14 +110,25 @@ export class PlaylistListComponent implements OnInit, OnDestroy {
   newPlaylist = {
     name: '',
     description: '',
-    public: false,
+    isPublic: false,
   };
 
   createPlaylist() {
-    this.musicService.createPlaylist(this.newPlaylist).subscribe(() => {
+    const payload = {
+      name: this.newPlaylist.name,
+      description: this.newPlaylist.description,
+      visibility: this.newPlaylist.isPublic ? 'PUBLIC' : 'PRIVATE',
+    };
+
+    this.musicService.createPlaylist(payload).subscribe(() => {
       this.closeCreateModal();
       this.loadPlaylists();
-      this.newPlaylist = { name: '', description: '', public: false };
+
+      this.newPlaylist = {
+        name: '',
+        description: '',
+        isPublic: false,
+      };
     });
   }
 }
