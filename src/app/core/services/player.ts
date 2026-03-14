@@ -68,11 +68,24 @@ export class PlayerService {
   pause() {
     this.audio.pause();
     this.isPlayingSubject.next(false);
+
+    // notify backend
+    this.musicService.pauseSong().subscribe({
+      error: (err) => console.error('Pause failed', err),
+    });
   }
 
   resume() {
     this.audio.play();
     this.isPlayingSubject.next(true);
+
+    const song = this.currentSongSubject.value;
+
+    if (song) {
+      this.musicService.playSong(song.id).subscribe({
+        error: (err) => console.error('Resume API failed', err),
+      });
+    }
   }
 
   next() {

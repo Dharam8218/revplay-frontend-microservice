@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MusicService } from '../../../../core/services/music';
 import { PlayerService } from '../../../../core/services/player';
@@ -71,5 +77,23 @@ export class FavoritesListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  toggleSong(song: any) {
+    // same song playing → pause
+    if (this.currentSong?.id === song.id && this.isPlaying) {
+      this.playerService.pause();
+      return;
+    }
+
+    // same song paused → resume
+    if (this.currentSong?.id === song.id && !this.isPlaying) {
+      this.playerService.resume();
+      return;
+    }
+
+    // new song → play
+    this.playerService.setPlaylist(this.songs);
+    this.playerService.play(song);
   }
 }

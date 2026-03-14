@@ -249,6 +249,24 @@ export class MusicHomeComponent implements OnInit {
     }, 2000);
   }
 
+  toggleSong(song: any) {
+    // Same song currently playing → pause
+    if (this.currentSong?.id === song.id && this.isPlaying) {
+      this.playerService.pause();
+      return;
+    }
+
+    // Same song paused → resume
+    if (this.currentSong?.id === song.id && !this.isPlaying) {
+      this.playerService.resume();
+      return;
+    }
+
+    // Different song → play
+    this.playerService.setPlaylist(this.songs);
+    this.playerService.play(song);
+  }
+
   genres = [
     'POP',
     'HIP_HOP',

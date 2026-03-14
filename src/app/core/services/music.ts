@@ -28,7 +28,7 @@ export class MusicService {
 
     return this.http
       .get<any>(
-        `${this.baseUrl}/library/songs?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`,
+        `${this.baseUrl}/catalog/get-all-songs?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`,
       )
       .pipe(
         timeout(10000),
@@ -43,8 +43,12 @@ export class MusicService {
     return this.http.post(`${this.baseUrl}/playback/play/${songId}`, {});
   }
 
+  pauseSong() {
+    return this.http.post(`${this.baseUrl}/playback/pause`, {});
+  }
+
   markFavorite(songId: number) {
-    return this.http.post(`${this.baseUrl}/favorites/${songId}`, {});
+    return this.http.post(`${this.baseUrl}/favorites`, { songId });
   }
 
   removeFavorite(songId: number) {
@@ -70,7 +74,9 @@ export class MusicService {
   }
 
   addSongToPlaylist(playlistId: number, songId: number) {
-    return this.http.post(`${this.baseUrl}/playlists/${playlistId}/songs/${songId}`, {});
+    return this.http.post(`${this.baseUrl}/playlists/${playlistId}/songs`, {
+      songId: songId,
+    });
   }
 
   removeSongFromPlaylist(playlistId: number, songId: number) {

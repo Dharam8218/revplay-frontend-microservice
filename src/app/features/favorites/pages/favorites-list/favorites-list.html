@@ -22,7 +22,7 @@
 
         <div class="relative bg-surfaceDark p-4 rounded-lg hover:bg-surfaceLight transition">
 
-            <img [src]="song.coverArtUrl" class="w-full h-40 object-cover rounded-md mb-3" />
+            <img [src]="song.coverImage" class="w-full h-40 object-cover rounded-md mb-3" />
 
             <h3 class="text-white font-semibold truncate">
                 {{ song.title }}
@@ -32,7 +32,7 @@
                 {{ song.artistName }}
             </p>
 
-            <button (click)="play(song)" class="absolute bottom-4 right-4 bg-green-500 p-3 rounded-full shadow-lg">
+            <button (click)="toggleSong(song)" class="absolute bottom-4 right-4 bg-green-500 p-3 rounded-full shadow-lg">
 
                 @if (currentSong?.id === song.id && isPlaying) {
                 ❚❚
