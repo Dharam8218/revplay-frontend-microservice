@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AlbumService {
-  private baseUrl = 'http://localhost:8080/revplay/albums';
+  private baseUrl = 'http://localhost:8080/revplay/catalog/albums';
 
   constructor(private http: HttpClient) {}
 
@@ -13,7 +13,7 @@ export class AlbumService {
   }
 
   getAlbums(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/get-all`);
+    return this.http.get<any[]>(`${this.baseUrl}`);
   }
 
   deleteAlbum(albumId: number) {
@@ -21,7 +21,7 @@ export class AlbumService {
   }
 
   updateAlbum(albumId: number, formData: FormData) {
-    return this.http.post(`${this.baseUrl}/${albumId}/update`, formData);
+    return this.http.post(`${this.baseUrl}/${albumId}`, formData);
   }
 
   addSongToAlbum(albumId: number, songId: number) {
