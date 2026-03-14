@@ -25,7 +25,7 @@ export class RegisterComponent {
       username: ['', Validators.required],
       email: ['', Validators.required],
       password: ['', Validators.required],
-      displayName: [''],
+
       bio: [''],
       gender: [''],
        role: ['USER', Validators.required]
@@ -50,7 +50,7 @@ export class RegisterComponent {
       username: this.registerForm.value.username,
       email: this.registerForm.value.email,
       password: this.registerForm.value.password,
-      displayName: this.registerForm.value.displayName,
+    
       bio: this.registerForm.value.bio,
       gender: this.registerForm.value.gender
     })
@@ -65,7 +65,7 @@ export class RegisterComponent {
 
       // Auto login after registration
       const loginData = {
-        username: this.registerForm.value.username,
+        email: this.registerForm.value.email,
         password: this.registerForm.value.password
       };
 

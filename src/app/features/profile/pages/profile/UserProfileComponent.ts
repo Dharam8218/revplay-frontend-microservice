@@ -11,7 +11,6 @@ import { AuthService } from '../../../../core/services/auth';
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class UserProfileComponent implements OnInit {
-
   profile: any;
   editMode = false;
   selectedFile: File | null = null;
@@ -26,8 +25,8 @@ export class UserProfileComponent implements OnInit {
     private cdr: ChangeDetectorRef,
   ) {
     this.editForm = this.fb.group({
-      displayName: [''],
-      bio: ['']
+      username: [''],
+      bio: [''],
     });
   }
 
@@ -36,21 +35,19 @@ export class UserProfileComponent implements OnInit {
   }
 
   loadProfile() {
-
-    this.loading = true;  // ✅ start loading
+    this.loading = true; // ✅ start loading
     this.cdr.markForCheck();
     this.authService.getProfile().subscribe({
       next: (res) => {
         this.profile = res;
-         this.loading = false;  // ✅ stop loading
+        this.loading = false; // ✅ stop loading
         this.cdr.detectChanges(); // Force view update immediately
         this.editForm.patchValue({
-          displayName: res.displayName,
-          bio: res.bio
+          username: res.username,
+          bio: res.bio,
         });
         this.cdr.detectChanges(); // Force view update after form patch
-      
-      }
+      },
     });
   }
 
@@ -63,13 +60,9 @@ export class UserProfileComponent implements OnInit {
   }
 
   saveChanges() {
-
     const formData = new FormData();
 
-    formData.append(
-      'data',
-      JSON.stringify(this.editForm.value)
-    );
+    formData.append('data', JSON.stringify(this.editForm.value));
 
     if (this.selectedFile) {
       formData.append('profileImage', this.selectedFile);
@@ -79,7 +72,11 @@ export class UserProfileComponent implements OnInit {
       next: () => {
         this.editMode = false;
         this.loadProfile();
-      }
+      },
     });
+  }
+
+  get firstName(): string {
+    return this.profile?.username?.split(' ')[0] || '';
   }
 }
