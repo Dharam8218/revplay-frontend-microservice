@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8080/revplay';
+  private baseUrl = 'http://localhost:8080/revplay/auth';
 
   constructor(private http: HttpClient) {}
 
@@ -50,17 +50,17 @@ export class AuthService {
   }
 
   getProfile() {
-    return this.http.get<any>(`${this.baseUrl}/get-profile`);
+    return this.http.get<any>(`${this.baseUrl}/user/get-profile`);
   }
   updateProfile(formData: FormData) {
-    return this.http.put(`${this.baseUrl}/update-profile`, formData);
+    return this.http.put(`${this.baseUrl}/user/update-profile`, formData);
   }
 
   getArtistProfile(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/artist/profile`);
+    return this.http.get<any>(`${this.baseUrl}/artist/get-profile`);
   }
   
   updateArtistProfile(formData: FormData): Observable<any> {
-    return this.http.put(`${this.baseUrl}/artist/profile`, formData);
+    return this.http.put(`${this.baseUrl}/artist/update-profile`, formData);
   }
 }
