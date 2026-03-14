@@ -5,7 +5,7 @@ import { SongResponse } from '../../../core/models/song-response';
 
 @Injectable({ providedIn: 'root' })
 export class SongService {
-  private baseUrl = 'http://localhost:8080/revplay/songs';
+  private baseUrl = 'http://localhost:8080/revplay/catalog/songs';
 
   constructor(private http: HttpClient) {}
 
@@ -22,7 +22,7 @@ export class SongService {
   }
 
   getArtistSongs() {
-    return this.http.get<SongResponse[]>(`${this.baseUrl}/get-all`);
+    return this.http.get<SongResponse[]>(`${this.baseUrl}`);
   }
 
   updateSongVisibility(songId: number, visibility: 'PUBLIC' | 'UNLISTED') {

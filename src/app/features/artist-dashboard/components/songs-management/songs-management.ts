@@ -124,7 +124,8 @@ export class SongsManagement {
       next: () => {
         alert('Song updated');
         this.editingSongId = null;
-        this.loadSongs(); // reload list
+        this.loadSongs();
+        this.cdr.markForCheck();
       },
       error: () => alert('Update failed'),
     });
