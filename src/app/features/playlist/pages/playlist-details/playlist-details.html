@@ -37,13 +37,13 @@
                 <span>•</span>
                 <span>{{ playlist?.totalSongs }} songs</span>
                 <span>•</span>
-                <button (click)="togglePrivacy(); $event.stopPropagation()" class="px-2 py-1 rounded-full text-white"
+                <button *ngIf="isOwner" (click)="togglePrivacy(); $event.stopPropagation()" class="px-2 py-1 rounded-full text-white"
                     [ngClass]="playlist?.visibility === 'PUBLIC' ? 'bg-green-600' : 'bg-yellow-600'">
                     {{ playlist?.visibility === 'PUBLIC' ? 'Public' : 'Private' }}
                 </button>
             </div>
 
-            <button (click)="enableEdit()" class="mt-4 bg-gray-700 px-4 py-2 rounded-full hover:bg-gray-600 transition">
+            <button *ngIf="isOwner" (click)="enableEdit()" class="mt-4 bg-gray-700 px-4 py-2 rounded-full hover:bg-gray-600 transition">
                 ✏️ Edit Playlist
             </button>
 
@@ -126,7 +126,7 @@
 
             </div>
 
-            <button (click)="removeSong(song.id)" class="text-red-500 text-sm">
+            <button *ngIf="isOwner" (click)="removeSong(song.id)" class="text-red-500 text-sm">
                 Remove
             </button>
 

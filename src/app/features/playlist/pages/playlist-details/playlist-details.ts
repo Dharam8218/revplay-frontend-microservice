@@ -12,6 +12,7 @@ import { PlayerService } from '../../../../core/services/player';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-playlist-details',
@@ -31,10 +32,13 @@ export class PlaylistDetailsComponent implements OnInit, OnDestroy {
   isPlaying = false;
   showSongs = false;
 
+  isOwner = false;
+
   constructor(
     private route: ActivatedRoute,
     private musicService: MusicService,
     private playerService: PlayerService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -69,6 +73,13 @@ export class PlaylistDetailsComponent implements OnInit, OnDestroy {
           // FIX
           this.playlist = res.playlist;
           this.songs = res.songs || [];
+
+          const currentUserId = this.authService.getUserId();
+
+          this.isOwner = this.playlist?.ownerId === currentUserId;
+
+          console.log('Playlist ownerId:', this.playlist?.ownerId);
+          console.log('Current userId:', this.authService.getUserId());
 
           this.loading = false;
 

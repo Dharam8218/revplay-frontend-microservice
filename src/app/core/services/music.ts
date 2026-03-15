@@ -99,7 +99,7 @@ export class MusicService {
 
   getPublicPlaylists(page = 0, size = 20) {
     return this.http.get(
-      `${this.baseUrl}/playlists/public?page=${page}&size=${size}&sortBy=createdAt&direction=desc`,
+      `${this.baseUrl}/playlists/public/paged?page=${page}&size=${size}&sortBy=createdAt&direction=desc`,
     );
   }
 

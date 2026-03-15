@@ -59,8 +59,18 @@ export class AuthService {
   getArtistProfile(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/artist/get-profile`);
   }
-  
+
   updateArtistProfile(formData: FormData): Observable<any> {
     return this.http.put(`${this.baseUrl}/artist/update-profile`, formData);
+  }
+
+  getUserId(): number | null {
+    const token = localStorage.getItem('token');
+
+    if (!token) return null;
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+
+    return payload.userId;
   }
 }
