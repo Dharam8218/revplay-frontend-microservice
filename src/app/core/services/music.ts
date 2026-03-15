@@ -113,7 +113,7 @@ export class MusicService {
 
   getRecentlyPlayed() {
     return this.http.get<ListeningHistoryResponse[]>(
-      `${this.baseUrl}/player/songs/recently-played`,
+      `${this.baseUrl}/playback/recent`,
     );
   }
 
@@ -121,11 +121,11 @@ export class MusicService {
     return this.http.get<{
       content: ListeningHistoryResponse[];
       totalPages: number;
-    }>(`${this.baseUrl}/player/songs/listening-history?page=${page}&size=${size}`);
+    }>(`${this.baseUrl}/playback/history`);
   }
 
   clearHistory() {
-    return this.http.delete(`${this.baseUrl}/player/songs/listening-history`);
+    return this.http.delete(`${this.baseUrl}/playback/clear`);
   }
 
   search(query: string, page = 0, size = 10) {

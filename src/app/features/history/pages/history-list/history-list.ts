@@ -42,6 +42,7 @@ export class HistoryListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.recentlyPlayed = res || [];
+        this.loading = false;
         this.cdr.detectChanges(); // Force view update immediately
       });
 
