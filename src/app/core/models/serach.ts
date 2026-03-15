@@ -13,7 +13,7 @@ export interface SongResponse {
 
 export interface ArtistResponse {
   id: number;
-  name: string;
+  artistName: string;
 }
 
 export interface AlbumResponse {
@@ -24,7 +24,7 @@ export interface AlbumResponse {
 export interface PlaylistResponse {
   id: number;
   name: string;
-  isPublic: boolean;
+  visibility: 'PUBLIC' | 'PRIVATE';
 }
 
 export interface SearchResponse {

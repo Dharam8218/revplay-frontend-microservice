@@ -108,15 +108,21 @@ export const routes: Routes = [
         component: BrowseByArtistComponent,
       },
       {
+        path: 'browse-artist/:id',
+        component: BrowseByArtistComponent,
+      },
+      {
         path: 'browse-album',
+        component: BrowseByAlbumComponent,
+      },
+      {
+        path: 'browse-album/:id',
         component: BrowseByAlbumComponent,
       },
       {
         path: 'my-stats',
         loadComponent: () =>
-          import('./features/user/user-stats/user-stats').then(
-            (m) => m.UserStatsComponent,
-          ),
+          import('./features/user/user-stats/user-stats').then((m) => m.UserStatsComponent),
       },
     ],
   },

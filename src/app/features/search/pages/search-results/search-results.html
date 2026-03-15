@@ -26,7 +26,9 @@
     <section class="mb-8">
         <h2 class="text-xl font-semibold mb-3">Artists</h2>
         @for (artist of results?.artists?.content; track artist.id) {
-        <p class="p-2 bg-surfaceDark mb-2 rounded">{{ artist.name }}</p>
+        <p class="p-2 bg-surfaceDark mb-2 rounded cursor-pointer hover:bg-gray-700" (click)="openArtist(artist.id)">
+            {{ artist.artistName }}
+        </p>
         }
     </section>
 
@@ -34,7 +36,9 @@
     <section class="mb-8">
         <h2 class="text-xl font-semibold mb-3">Albums</h2>
         @for (album of results?.albums?.content; track album.id) {
-        <p class="p-2 bg-surfaceDark mb-2 rounded">{{ album.name }}</p>
+        <p class="p-2 bg-surfaceDark mb-2 rounded cursor-pointer hover:bg-gray-700" (click)="openAlbum(album.id)">
+            {{ album.name }}
+        </p>
         }
     </section>
 
@@ -42,9 +46,9 @@
     <section>
         <h2 class="text-xl font-semibold mb-3">Playlists</h2>
         @for (pl of results?.playlists?.content; track pl.id) {
-        <div class="p-3 bg-surfaceDark rounded mb-2">
+        <div class="p-3 bg-surfaceDark rounded mb-2 cursor-pointer hover:bg-gray-700" (click)="openPlaylist(pl.id)">
             <p class="font-bold">{{ pl.name }}</p>
-            <p class="text-sm text-gray-400">{{ pl.isPublic ? 'Public' : 'Private' }}</p>
+            <p class="text-sm text-gray-400">{{ pl.visibility === 'PUBLIC' ? 'Public' : 'Private' }}</p>
         </div>
         }
     </section>

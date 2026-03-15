@@ -112,9 +112,7 @@ export class MusicService {
   }
 
   getRecentlyPlayed() {
-    return this.http.get<ListeningHistoryResponse[]>(
-      `${this.baseUrl}/playback/recent`,
-    );
+    return this.http.get<ListeningHistoryResponse[]>(`${this.baseUrl}/playback/recent`);
   }
 
   getListeningHistory(page = 0, size = 20) {
@@ -129,7 +127,7 @@ export class MusicService {
   }
 
   search(query: string, page = 0, size = 10) {
-    return this.http.get<SearchResponse>(`${this.baseUrl}/library/search`, {
+    return this.http.get<SearchResponse>(`${this.baseUrl}/catalog/songs/search`, {
       params: {
         q: query,
         page: page,
@@ -139,19 +137,20 @@ export class MusicService {
   }
 
   getSongsByGenre(genre: string, page = 0, size = 10) {
-    return this.http.get<PagedResult<SongResponse>>(`${this.baseUrl}/library/genre/${genre}`, {
+    return this.http.get<PagedResult<SongResponse>>(`${this.baseUrl}/catalog/songs/genre/${genre}`, {
       params: { page, size },
     });
   }
 
   getAllArtists() {
-    return this.http.get<any[]>(`${this.baseUrl}/artist/get-all`);
+    return this.http.get<any[]>(`${this.baseUrl}/auth/artist/get-all`);
   }
 
   getUserStatistics() {
     return this.http.get<{
       totalPlaylists: number;
-      totalFavorites: number;
-    }>(`${this.baseUrl}/user/statistics`);
+      favoriteSongs: number;
+      totalPlayCount: number;
+    }>(`${this.baseUrl}/analytics/user/stats`);
   }
 }

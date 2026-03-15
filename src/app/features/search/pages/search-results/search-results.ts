@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { MusicService } from '../../../../core/services/music';
 import { SearchResponse, SongResponse } from '../../../../core/models/serach';
 import { PlayerService } from '../../../../core/services/player';
@@ -18,6 +19,7 @@ export class SearchResultsComponent implements OnInit {
     private route: ActivatedRoute,
     private musicService: MusicService,
     private playerService: PlayerService,
+    private router: Router,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -28,6 +30,18 @@ export class SearchResultsComponent implements OnInit {
     });
   }
 
+  openArtist(id: number) {
+    this.router.navigate(['/browse-artist', id]);
+  }
+
+  openAlbum(id: number) {
+    this.router.navigate(['/browse-album', id]);
+  }
+
+  openPlaylist(id: number) {
+    this.router.navigate(['/playlists', id]);
+  }
+
   performSearch() {
     this.loading = true;
     this.cdr.markForCheck();
@@ -35,7 +49,7 @@ export class SearchResultsComponent implements OnInit {
       next: (res) => {
         this.results = res;
         this.loading = false;
-        this.cdr.detectChanges(); // Force view update immediately  
+        this.cdr.detectChanges(); // Force view update immediately
       },
       error: (err) => {
         console.error(err);

@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class LibraryService {
-  private baseUrl = 'http://localhost:8080/revplay/library';
+  private baseUrl = 'http://localhost:8080/revplay';
 
   constructor(private http: HttpClient) {}
 
@@ -15,11 +15,11 @@ export class LibraryService {
   }
 
   browseByArtist(artistId: number) {
-    return this.http.get<PageResponse<any>>(`${this.baseUrl}/artist/${artistId}`);
+    return this.http.get<any>(`${this.baseUrl}/catalog/songs/artists/${artistId}`);
   }
 
   browseByAlbum(albumId: number) {
-    return this.http.get<any>(`${this.baseUrl}/albums/${albumId}`);
+    return this.http.get<any>(`${this.baseUrl}/catalog/songs/albums/${albumId}`);
   }
 
   // Filters
@@ -29,12 +29,12 @@ export class LibraryService {
 
   // Get all artists
   getAllArtists() {
-    return this.http.get<any[]>(`http://localhost:8080/revplay/artist/get-all`);
+    return this.http.get<any[]>(`${this.baseUrl}/auth/artist/get-all`);
   }
 
   // Get all albums
   getAllAlbums() {
-    return this.http.get<any[]>(`http://localhost:8080/revplay/albums/get-all-albums`);
+    return this.http.get<any[]>(`${this.baseUrl}/catalog/albums/get-all`);
   }
 }
 
