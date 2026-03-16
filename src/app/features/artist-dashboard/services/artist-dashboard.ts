@@ -13,14 +13,14 @@ export class ArtistDashboardService {
   getDashboardOverview(): Observable<{
     totalSongs: number;
     totalPlays: number;
-    totalFavorites: number;
+    totalListeners: number;
     totalAlbums: number;
   }> {
     return this.http.get<{
       totalSongs: number;
       totalPlays: number;
-      totalFavorites: number;
+      totalListeners: number;
       totalAlbums: number;
-    }>(`${this.baseUrl}/artist/dashboard`);
+    }>(`${this.baseUrl}/analytics/artist/summary`);
   }
 }

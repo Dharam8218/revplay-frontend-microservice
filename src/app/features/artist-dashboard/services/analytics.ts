@@ -30,12 +30,18 @@ export interface FavoritedUser {
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
-  private baseUrl = 'http://localhost:8080/revplay/artist/analytics';
+  private baseUrl = 'http://localhost:8080/revplay/analytics';
 
   constructor(private http: HttpClient) {}
 
   getTrends(type: 'DAILY' | 'WEEKLY' | 'MONTHLY'): Observable<TrendResponse[]> {
-    return this.http.get<TrendResponse[]>(`${this.baseUrl}/trends?type=${type}`);
+    const map: Record<'DAILY' | 'WEEKLY' | 'MONTHLY', string> = {
+      DAILY: 'daily',
+      WEEKLY: 'weekly',
+      MONTHLY: 'monthly',
+    };
+
+    return this.http.get<TrendResponse[]>(`${this.baseUrl}/artist/trends/${map[type]}`);
   }
 
   getSongPlayCount(songId: number) {
@@ -44,13 +50,13 @@ export class AnalyticsService {
 
   getTopListeners(page: number = 0, size: number = 5) {
     return this.http.get<TopListenerPage>(
-      `http://localhost:8080/revplay/artist/top-listeners?page=${page}&size=${size}`,
+      `http://localhost:8080/revplay/analytics/artist/top-listeners?page=${page}&size=${size}`,
     );
   }
 
   getFavoritedUsers(songId: number) {
     return this.http.get<FavoritedUser[]>(
-      `http://localhost:8080/revplay/artist/songs/${songId}/favorited-users`,
+      `http://localhost:8080/revplay/analytics/artist/songs/${songId}/favorited-users`,
     );
   }
 }

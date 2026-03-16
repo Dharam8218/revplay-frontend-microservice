@@ -15,7 +15,7 @@ export class DashboardOverview implements OnInit {
 
   totalSongs = 0;
   totalPlays = 0;
-  totalFavorites = 0;
+  totalListeners = 0;
   totalAlbums = 0;
 
   constructor(
@@ -35,7 +35,7 @@ export class DashboardOverview implements OnInit {
       next: (res) => {
         this.totalSongs = res.totalSongs;
         this.totalPlays = res.totalPlays;
-        this.totalFavorites = res.totalFavorites;
+        this.totalListeners = res.totalListeners;
         this.totalAlbums = res.totalAlbums;
         
         this.loading = false;
