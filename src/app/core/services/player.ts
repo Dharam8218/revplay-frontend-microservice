@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { MusicService } from './music';
 
@@ -6,12 +6,32 @@ import { MusicService } from './music';
   providedIn: 'root',
 })
 export class PlayerService {
-  constructor(private musicService: MusicService) {}
-
   private audio = new Audio();
 
   private playlist: any[] = [];
   private currentIndex = -1;
+
+  constructor(
+    private musicService: MusicService,
+    private ngZone: NgZone,
+  ) {
+    // 🔥 START SMOOTH PROGRESS LOOP
+    this.startSmoothProgress();
+
+    // 🔥 SET DURATION
+    this.audio.onloadedmetadata = () => {
+      this.ngZone.run(() => {
+        this.durationSubject.next(this.audio.duration);
+      });
+    };
+
+    // 🔥 AUTO NEXT
+    this.audio.onended = () => {
+      this.next();
+    };
+  }
+
+  // ---------------- STATE ----------------
 
   private currentSongSubject = new BehaviorSubject<any>(null);
   currentSong$ = this.currentSongSubject.asObservable();
@@ -21,6 +41,40 @@ export class PlayerService {
 
   private volumeSubject = new BehaviorSubject<number>(1);
   volume$ = this.volumeSubject.asObservable();
+
+  private currentTimeSubject = new BehaviorSubject<number>(0);
+  currentTime$ = this.currentTimeSubject.asObservable();
+
+  private durationSubject = new BehaviorSubject<number>(0);
+  duration$ = this.durationSubject.asObservable();
+
+  private progressSubject = new BehaviorSubject<number>(0);
+  progress$ = this.progressSubject.asObservable();
+
+  // ---------------- SMOOTH PROGRESS ----------------
+
+  private startSmoothProgress() {
+    const update = () => {
+      if (!this.audio.paused) {
+        this.ngZone.run(() => {
+          const current = this.audio.currentTime;
+          const duration = this.audio.duration || 0;
+
+          this.currentTimeSubject.next(current);
+
+          if (duration > 0) {
+            this.progressSubject.next((current / duration) * 100);
+          }
+        });
+      }
+
+      requestAnimationFrame(update); // 🔥 60fps smooth
+    };
+
+    update();
+  }
+
+  // ---------------- VOLUME ----------------
 
   setVolume(value: number) {
     this.audio.volume = value;
@@ -37,7 +91,8 @@ export class PlayerService {
     this.volumeSubject.next(1);
   }
 
-  // Set full playlist
+  // ---------------- PLAYLIST ----------------
+
   setPlaylist(songs: any[]) {
     this.playlist = songs;
   }
@@ -51,25 +106,25 @@ export class PlayerService {
 
   private startAudio(song: any) {
     this.audio.pause();
-    this.audio = new Audio(song.audioUrl);
+
+    // ✅ REUSE AUDIO (IMPORTANT)
+    this.audio.src = song.audioUrl;
+    this.audio.load();
 
     this.audio.play();
 
     this.currentSongSubject.next(song);
     this.isPlayingSubject.next(true);
-    this.musicService.playSong(song.id).subscribe();
 
-    // Auto play next when ends
-    this.audio.onended = () => {
-      this.next();
-    };
+    this.musicService.playSong(song.id).subscribe();
   }
+
+  // ---------------- CONTROLS ----------------
 
   pause() {
     this.audio.pause();
     this.isPlayingSubject.next(false);
 
-    // notify backend
     this.musicService.pauseSong().subscribe({
       error: (err) => console.error('Pause failed', err),
     });
@@ -100,5 +155,19 @@ export class PlayerService {
       this.currentIndex--;
       this.startAudio(this.playlist[this.currentIndex]);
     }
+  }
+
+  // ---------------- SEEK ----------------
+
+  seek(percent: number) {
+    if (!this.audio.duration) return;
+
+    const newTime = (percent / 100) * this.audio.duration;
+
+    this.audio.currentTime = newTime;
+
+    // 🔥 instant UI update
+    this.currentTimeSubject.next(newTime);
+    this.progressSubject.next(percent);
   }
 }

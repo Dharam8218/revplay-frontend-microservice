@@ -1,56 +1,65 @@
-<div class="h-full flex items-center justify-between px-8">
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-[#121212] border-t border-gray-700 px-6 py-2">
 
-  <!-- Song Info -->
-  <div>
-    @if (currentSong) {
-    <div>
+  <!-- MAIN ROW -->
+  <div class="flex items-center justify-between">
+
+    <!-- LEFT: Song Info -->
+    <div class="w-1/4">
+      @if (currentSong) {
       <p class="font-semibold">{{ currentSong.title }}</p>
       <p class="text-sm text-gray-400">{{ currentSong.artistName }}</p>
+      } @else {
+      <p class="font-semibold">No Song Playing</p>
+      <p class="text-sm text-gray-400">Select a song</p>
+      }
     </div>
-    } @else {
-    <p class="font-semibold">No Song Playing</p>
-    <p class="text-sm text-gray-400">Select a song</p>
-    }
-  </div>
 
-  <!-- Controls -->
-  <div class="flex items-center space-x-4 text-xl">
+    <!-- CENTER -->
+    <div class="flex flex-col items-center w-2/4">
 
-    <button (click)="previous()" class="text-white text-xl">
-      ⏮
-    </button>
+      <div class="flex items-center gap-4 mb-1">
+        <button (click)="previous()">⏮</button>
 
-    <button (click)="toggle()" class="bg-white text-black rounded-full w-10 h-10 flex items-center justify-center">
-      @if (isPlaying) {
-      ❚❚
-      } @else {
-      ▶
-      }
-    </button>
+        <button (click)="toggle()" class="bg-white text-black rounded-full w-10 h-10 flex items-center justify-center">
+          @if (isPlaying) { ❚❚ } @else { ▶ }
+        </button>
 
-    <button (click)="next()" class="text-white text-xl">
-      ⏭
-    </button>
+        <button (click)="next()">⏭</button>
+      </div>
 
-  </div>
+      <div class="flex items-center gap-2 w-full">
 
-  <!-- Volume -->
-  <div class="flex items-center gap-3">
+        <span class="text-xs text-gray-400 w-10 text-right">
+          {{ formatTime(currentTime) }}
+        </span>
 
-    <!-- Volume Icon -->
-    <button (click)="toggleMute()" class="text-white text-lg">
+        <!-- 🔥 CUSTOM BAR -->
+        <div class="flex-1 h-1 bg-gray-600 rounded cursor-pointer relative" (click)="onBarClick($event)">
 
-      @if (volume === 0) {
-      🔇
-      } @else {
-      🔊
-      }
+          <div class="h-1 bg-green-500 rounded" [style.width.%]="progress">
+          </div>
 
-    </button>
+        </div>
 
-    <!-- Volume Slider -->
-    <input type="range" min="0" max="1" step="0.01" [value]="volume" (input)="changeVolume($event)"
-      class="w-24 accent-green-500" />
+        <span class="text-xs text-gray-400 w-10">
+          {{ formatTime(duration) }}
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="flex items-center gap-3 justify-end w-1/4">
+
+      <button (click)="toggleMute()">
+        @if (volume === 0) { 🔇 } @else { 🔊 }
+      </button>
+
+      <input type="range" min="0" max="1" step="0.01" [value]="volume" (input)="changeVolume($event)"
+        class="w-24 accent-green-500" />
+
+    </div>
 
   </div>
 

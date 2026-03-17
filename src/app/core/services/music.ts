@@ -12,32 +12,29 @@ import { PagedResult, SearchResponse, SongResponse } from '../models/serach';
 export class MusicService {
   constructor(private http: HttpClient) {}
 
-  private cachedSongs: any[] = [];
+  private cachedResponse: any = null;
   private cachedPage = -1;
 
   baseUrl = 'http://localhost:8080/revplay';
 
   getSongs(page: number, size: number, sortBy: string, direction: string) {
-    if (this.cachedSongs.length > 0 && this.cachedPage === page) {
-      return of({
-        content: this.cachedSongs,
-        totalPages: 1,
-        totalElements: this.cachedSongs.length,
-      });
-    }
 
-    return this.http
-      .get<any>(
-        `${this.baseUrl}/catalog/get-all-songs?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`,
-      )
-      .pipe(
-        timeout(10000),
-        tap((res) => {
-          this.cachedSongs = res.content;
-          this.cachedPage = page;
-        }),
-      );
+  if (this.cachedResponse && this.cachedPage === page) {
+    return of(this.cachedResponse); // ✅ return full response
   }
+
+  return this.http
+    .get<any>(
+      `${this.baseUrl}/catalog/get-all-songs?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`
+    )
+    .pipe(
+      timeout(10000),
+      tap((res) => {
+        this.cachedResponse = res;   // ✅ store full response
+        this.cachedPage = page;
+      }),
+    );
+}
 
   playSong(songId: number) {
     return this.http.post(`${this.baseUrl}/playback/play/${songId}`, {});
