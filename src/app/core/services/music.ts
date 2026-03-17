@@ -14,27 +14,29 @@ export class MusicService {
 
   private cachedResponse: any = null;
   private cachedPage = -1;
+  private cacheKey: string | null = null;
 
   baseUrl = 'http://localhost:8080/revplay';
 
-  getSongs(page: number, size: number, sortBy: string, direction: string) {
+  getSongs(page: number, size: number, sortBy: string, direction: string, genre?: string) {
+    const key = `${page}-${size}-${sortBy}-${direction}-${genre || 'all'}`;
 
-  if (this.cachedResponse && this.cachedPage === page) {
-    return of(this.cachedResponse); // ✅ return full response
+    if (this.cachedResponse && this.cacheKey === key) {
+      return of(this.cachedResponse);
+    }
+
+    return this.http
+      .get<any>(
+        `${this.baseUrl}/catalog/get-all-songs?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`,
+      )
+      .pipe(
+        timeout(10000),
+        tap((res) => {
+          this.cachedResponse = res;
+          this.cacheKey = key; // ✅ FIX
+        }),
+      );
   }
-
-  return this.http
-    .get<any>(
-      `${this.baseUrl}/catalog/get-all-songs?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`
-    )
-    .pipe(
-      timeout(10000),
-      tap((res) => {
-        this.cachedResponse = res;   // ✅ store full response
-        this.cachedPage = page;
-      }),
-    );
-}
 
   playSong(songId: number) {
     return this.http.post(`${this.baseUrl}/playback/play/${songId}`, {});
@@ -134,9 +136,12 @@ export class MusicService {
   }
 
   getSongsByGenre(genre: string, page = 0, size = 10) {
-    return this.http.get<PagedResult<SongResponse>>(`${this.baseUrl}/catalog/songs/genre/${genre}`, {
-      params: { page, size },
-    });
+    return this.http.get<PagedResult<SongResponse>>(
+      `${this.baseUrl}/catalog/songs/genre/${genre}`,
+      {
+        params: { page, size },
+      },
+    );
   }
 
   getAllArtists() {

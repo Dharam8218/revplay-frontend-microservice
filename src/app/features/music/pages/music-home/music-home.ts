@@ -108,7 +108,7 @@ export class MusicHomeComponent implements OnInit {
         });
     } else {
       this.musicService
-        .getSongs(this.page, this.size, 'id', this.sortDirection)
+        .getSongs(this.page, this.size, 'releaseDate', this.sortDirection)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (res) => {
