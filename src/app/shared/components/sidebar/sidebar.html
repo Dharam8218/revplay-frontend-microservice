@@ -24,7 +24,7 @@
          History
       </a>
 
-      <a routerLink="/artist" class="block hover:text-white transition">
+      <a *ngIf="authService.isArtist()" routerLink="/artist" class="block hover:text-white transition">
          Artist Dashboard
       </a>
 

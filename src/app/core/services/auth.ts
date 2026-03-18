@@ -73,4 +73,14 @@ export class AuthService {
 
     return payload.userId;
   }
+
+  isArtist(): boolean {
+    const roles = this.getRoles();
+    console.log('Checking roles:', roles);
+    return roles.includes('ROLE_ARTIST');
+  }
+
+  isUser(): boolean {
+    return this.getRoles().includes('ROLE_LISTENER');
+  }
 }
